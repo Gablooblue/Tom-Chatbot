@@ -16,10 +16,12 @@ var connector = new builder.ChatConnector({
 // Listen for messages from users
 server.post('/api/messages', connector.listen());
 
+
 var inMemoryStorage = new builder.MemoryBotStorage();
 // Receive messages from the user and respond by echoing each message back (prefixed with 'You said:')
 var bot = new builder.UniversalBot(connector, [
    function (session) {
+
       session.beginDialog("hello");
    }//,
    //function(session,results){
@@ -29,7 +31,6 @@ var bot = new builder.UniversalBot(connector, [
 
    bot.dialog("hello",[
       function ( session) {
-         session.dialogData.loca={};
          session.send("");
          session.sendTyping();
          setTimeout(function () {
@@ -37,8 +38,8 @@ var bot = new builder.UniversalBot(connector, [
             session.sendTyping();
          }, 1000);
          setTimeout(function () {
-            session.dialogData.loca.location = "Katipunan";
-            session.send(`I can see that you're in ${session.dialogData.loca.location}.`);
+            session.dialogData.location = "Katipunan";
+            session.send(`I can see that you're in ${session.dialogData.location}.`);
             session.sendTyping();
          }, 3700);
          setTimeout(function () {
@@ -46,23 +47,27 @@ var bot = new builder.UniversalBot(connector, [
          }, 4700);
       },
       function( session, results){
-         session.dialogData.loca.hereBa = results.response.entity;
-      },
-      function( session){
-         if( session.dialogData.loca.hereBa == "No"){
-            builder.Prompts.text( session, "Oh okay, let's go on an adventure then! Where do you want to eat?");
+         session.dialogData.hereBa = results.response.entity;
+         if( session.dialogData.hereBa == "No"){
+            session.sendTyping();
+            setTimeout(function () {
+               builder.Prompts.text( session, "Oh okay, let's go on an adventure then! Where do you want to eat?");
+            }, 2000);
          }
       },
-      function( session, results){
-         if( session.dialogData.loca.hereBa == "No"){
-            session.dialogData.loca.location = results.response.entity;
+      function( session, result){
+         session.dialogData.hereBa = result.response.entity;
+         if( session.dialogData.hereBa == "No"){
+            session.dialogData.location = results.response.entity;
          }
-      },
-      function( session){
-         builder.Prompts.text( session, "What are you craving for?");
+
+         session.sendTyping();
+         setTimeout(function () {
+            builder.Prompts.text( session, "What are you craving for?");
+         }, 1500);
       },
       function( session, results){
-         session.dialogData.loca.location = results.response.entity;
+         session.dialogData.craving = results.response.entity;
          setTimeout(function () {
             session.send();
             session.sendTyping();
