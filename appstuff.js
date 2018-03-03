@@ -20,19 +20,23 @@ var inMemoryStorage = new builder.MemoryBotStorage();
 // Receive messages from the user and respond by echoing each message back (prefixed with 'You said:')
 var bot = new builder.UniversalBot(connector, [
 	function (session) {
-      session.send("");
-      session.sendTyping();
-      setTimeout(function () {
-         session.send("Hello!");
-         session.sendTyping();
-      }, 1000);
-      setTimeout(function () {
-   	  session.send("You are near <location>. Do you want to eat here?");
-        session.sendTyping();
-     }, 3500);
-     setTimeout(function () {
-        builder.Prompts.choice(session,"Yes or no?","Yes|No",{listStyle: 3});
-     }, 4500);},
+		session.send("You said: %s", session.message.text);
+		session.beginDialog("askcrap");},
 	function(session,results){
-		session.send(results.response);}
-   ]);
+		session.send(results.response);}]
+).set('storage', inMemoryStorage);
+
+bot.dialog('askcrap', [
+    function (session) {
+        session.dialogData.info = {};
+        builder.Prompts.text(session, "What is your name?");
+    },
+    function (session, results) {
+        session.dialogData.name = results.response;
+        builder.Prompts.text(session, "What is your location?");
+    },
+	function (session,results) {
+        session.dialogData.info = {};
+        builder.Prompts.text(session, "What is your name?");
+    },
+]);
