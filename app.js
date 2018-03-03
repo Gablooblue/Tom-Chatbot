@@ -21,7 +21,10 @@ var inMemoryStorage = new builder.MemoryBotStorage();
 var bot = new builder.UniversalBot(connector, [
    function (session) {
       session.beginDialog("hello");
-      //session.send(response);}
+      },
+   function(session,results){
+	  session.dialogData.yn = results.response.entity;
+	  session.send(session.dialogData.yn);}
    ]).set('storage', inMemoryStorage);
 
    bot.dialog("hello",[
@@ -41,6 +44,7 @@ var bot = new builder.UniversalBot(connector, [
             builder.Prompts.choice(session,"Yes or no?",["Yes", "No"],{listStyle: 3});
          }, 4500);},
          function(session, results){
-            session.endDialogWithResult(results.response.entity);
+			session.dialogData.yn = results.response;
+            session.endDialogWithResult({response:session.dialogData.yn});
             }
          ]);
