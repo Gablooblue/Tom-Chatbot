@@ -22,6 +22,8 @@ var hello = new builder.UniversalBot(connector, function (session) {
    }, 1000);
 
    setTimeout(function () {
+	  session.send("You are near <location>. Do you want to eat here?");
+	  builder.Prompts.choice(session,"Yes or no?","Yes|No",{listStyle: 3});
       var yesno = new builder.Message(session)
       .text("You are near <location>. Do you want to eat here?")
       .suggestedActions(
@@ -32,5 +34,5 @@ var hello = new builder.UniversalBot(connector, function (session) {
             ]
          ));
          session.send(yesno);
-      }, 4000);
+      }, 3000);
 });
