@@ -31,8 +31,13 @@ var bot = new builder.UniversalBot(connector, [
         session.sendTyping();
      }, 3500);
      setTimeout(function () {
-        builder.Prompts.choice(session,"Yes or no?","Yes|No",{listStyle: 3});
+        builder.Prompts.choice(session,"Yes or no?",["Yes", "No"],{listStyle: 3});
      }, 4500);},
-	function(session,results){
-		session.send(results.response);}
-   ]);
+	function(session, results){
+		session.dialogData.choicer = results.response.entity;
+      if( results.response.entity == "Yes"){
+         session.send("hi");
+      }else{
+         
+      }
+   ]).set('storage', inMemoryStorage);
