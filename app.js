@@ -19,7 +19,12 @@ server.post('/api/messages', connector.listen());
 var inMemoryStorage = new builder.MemoryBotStorage();
 // Receive messages from the user and respond by echoing each message back (prefixed with 'You said:')
 var bot = new builder.UniversalBot(connector, [
-	function (session) {
+   function (session) {
+      session.beginDialog("hello");	}
+   ]).set('storage', inMemoryStorage);
+
+bot.dialog("hello",[
+    function (session) {
       session.send("");
       session.sendTyping();
       setTimeout(function () {
@@ -40,4 +45,5 @@ var bot = new builder.UniversalBot(connector, [
       }else{
          
       }
-   ]).set('storage', inMemoryStorage);
+	}
+]);
