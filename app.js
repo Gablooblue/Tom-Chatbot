@@ -21,10 +21,10 @@ var inMemoryStorage = new builder.MemoryBotStorage();
 var bot = new builder.UniversalBot(connector, [
    function (session) {
       session.beginDialog("hello");
-      },
-   function(session,results){
-	  session.dialogData.yn = results.response.entity;
-	  session.send(session.dialogData.yn);}
+   }//,
+   //function(session,results){
+	  //session.dialogData.yn = results.response.entity;
+	  //session.send(session.dialogData.yn);}
    ]).set('storage', inMemoryStorage);
 
    bot.dialog("hello",[
@@ -33,40 +33,43 @@ var bot = new builder.UniversalBot(connector, [
          session.send("");
          session.sendTyping();
          setTimeout(function () {
-            session.send("Hello!");
+            session.send("Hello! I guess you're hungry.");
             session.sendTyping();
          }, 1000);
          setTimeout(function () {
             session.dialogData.loca.location = "Katipunan";
-            session.send(`I think that you're somewhere in ${session.dialogData.location}.`);
+            session.send(`I can see that you're in ${session.dialogData.loca.location}.`);
             session.sendTyping();
          }, 3700);
          setTimeout(function () {
             builder.Prompts.choice(session,"Do you want to eat here?",["Yes", "No"],{listStyle: 3});
-         }, 4500);
+         }, 4700);
       },
       function( session, results){
-         session.dialogData.hereBa = results.response.entity;
-
+         session.dialogData.loca.hereBa = results.response.entity;
       },
       function( session){
-         if( session.dialogData.hereBa == "No"){
+         if( session.dialogData.loca.hereBa == "No"){
             builder.Prompts.text( session, "Oh okay, let's go on an adventure then! Where do you want to eat?");
          }
       },
       function( session, results){
-         if( session.dialogData.hereBa == "No"){
-            session.dialogData.location = results.response.entity;
+         if( session.dialogData.loca.hereBa == "No"){
+            session.dialogData.loca.location = results.response.entity;
          }
       },
       function( session){
          builder.Prompts.text( session, "What are you craving for?");
       },
       function( session, results){
-         session.dialogData.location = results.response.entity;
+         session.dialogData.loca.location = results.response.entity;
          setTimeout(function () {
             session.send();
             session.sendTyping();
          }, 1000);
       },
-   ]);
+      function(session, results){
+      //session.dialogData.yn = results.response;
+         session.endDialogWithResult({response:session.dialogData.loca});
+         }
+      ]);
