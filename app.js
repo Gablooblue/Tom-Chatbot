@@ -55,9 +55,12 @@ bot.dialog("hello",[
             builder.Prompts.text( session, "Oh okay, let's go on an adventure then! Where do you want to eat?");
          }, 2000);
       }else{
-         next(session);
+	  session.endDialog();
+	  session.beginDialog("ask");
       }
    },
+]);
+bot.dialog("ask", [
    function( session, results){
       setTimeout(function () {
          session.send("");
@@ -105,6 +108,7 @@ bot.dialog("hello",[
             ])
          ]);
          session.send(msg);
+	session.send("Have a nice meal!");
       }else if( session.dialogData.craving == "Sinigang" || session.dialogData.craving == "sinigang"){
 
          var msg = new builder.Message(session);
@@ -136,6 +140,7 @@ bot.dialog("hello",[
             ])
          ]);
          session.send(msg);
+	session.send("Have a nice meal!");
       }else if( session.dialogData.craving == "barbeque" || session.dialogData.craving == "bbq"){
 
          var msg = new builder.Message(session);
@@ -158,13 +163,42 @@ bot.dialog("hello",[
                builder.CardAction.openUrl(session, "https://www.zomato.com/manila/holy-smokes-bbq-poblacion-makati-city", "Always ready for this!")
             ])
          ]);
-         session.send(msg);
+	 session.send(msg);
+	session.send("Have a nice meal!");
       }
+       else {
+	    session.send("Sorry We cant recognize that tag, please input a valid one");
+	    session.beginDialog("ask");
+       }
+       //session.beginDialog("feedback");
    },
-   function( session, results){
-   },
-   function(session, results){
-      //session.dialogData.yn = results.response;
-      session.endDialogWithResult({response:session.dialogData.loca});
-   }
 ]);
+/*
+bot.dialog("feedback", [
+
+    function( session, results){
+      setTimeout(function () {
+	 session.send("");
+	 session.sendTyping();
+      }, 1000);
+	setTimeout(function (){
+	    session.send("Here are your results")
+	}, 3000)
+	setTimeout(function () {
+	    builder.Prompts.choice(session,"Do you want to go again?",["Yes", "No"],{listStyle: 3});
+	}, 4700);
+      session.dialogData.repeat= results.response.entity;
+	if(session.dialogData.repeat === "Yes"){
+	    session.beginDialog("ask");
+	}
+	
+    },
+    function ( session, results) {
+	setTimeout(function () {
+	    session.send("Have a nice meal! Please leave a comment by sending a message after this.");
+		    
+	},4000);
+	session.dialogData.comments = results.response;
+	session.endDialogWithResults(results);
+    }
+]);,    */
